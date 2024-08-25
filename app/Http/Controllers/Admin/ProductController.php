@@ -35,12 +35,16 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $imageFileName = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
+
+        $request->file('image')->storeAs("image", $imageFileName, "public");
+
         Product::create([
             "name" => $request->name,
             "category_id" => $request->category_id,
             "description" => $request->description,
             "price" => $request->price,
-            "image" => "default.jpg",
+            "image" => $imageFileName,
         ]);
         return redirect()->route('products.index');
     }
@@ -50,7 +54,8 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $product = Product::whereId($id)->first();
+        return view('admin.product.show', ["product" => $product]);
     }
 
     /**
@@ -72,16 +77,16 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $namaFile = uniqid() . "." . $request->file("foto")->getClientOriginalExtension();
+        $imageFileName = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
 
-        $request->file("foto")->storeAs("image", $namaFile, "public");
+        $request->file("image")->storeAs("image", $imageFileName, "public");
 
         Product::find($id)->update([
             "name" => $request->name,
             "category_id" => $request->category_id,
             "description" => $request->description,
             "price" => $request->price,
-            "image" => "default.jpg",
+            "image" => $imageFileName,
         ]);
         return redirect()->route("products.index");
     }
@@ -91,6 +96,7 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Product::destroy($id);
+        return redirect()->route('products.index');
     }
 }

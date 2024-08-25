@@ -4,7 +4,7 @@
 @section('body')
 <div class="container mt-5">
     <h2 class="mb-4">Product Input Form</h2>
-    <form method="POST" action="{{ route('products.store') }}">
+    <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="productName" class="form-label">Product Name</label>
@@ -38,7 +38,7 @@
         <!-- Image -->
         <div class="mb-3">
             <label for="productImage" class="form-label">Product Image</label>
-            <input type="file" class="form-control" id="productImage">
+            <input type="file" class="form-control" id="productImage" name="image">
         </div>
 
         <!-- Submit Button -->
