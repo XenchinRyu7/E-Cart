@@ -23,7 +23,6 @@
                 <div class="col-sm-2"><strong>Description:</strong></div>
                 <div class="col-sm-10">{{ $product->description }}</div>
             </div>
-
             <div class="row mb-3">
                 <div class="col-sm-2"><strong>Product Image:</strong></div>
                 <div class="col-sm-10">
