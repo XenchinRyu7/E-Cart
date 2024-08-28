@@ -1,0 +1,166 @@
+[1mdiff --git a/app/Http/Controllers/Admin/ProductController.php b/app/Http/Controllers/Admin/ProductController.php[m
+[1mindex 9421c1f..20e26f3 100644[m
+[1m--- a/app/Http/Controllers/Admin/ProductController.php[m
+[1m+++ b/app/Http/Controllers/Admin/ProductController.php[m
+[36m@@ -35,16 +35,12 @@[m [mpublic function create()[m
+      */[m
+     public function store(Request $request)[m
+     {[m
+[31m-        $imageFileName = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();[m
+[31m-[m
+[31m-        $request->file('image')->storeAs("image", $imageFileName, "public");[m
+[31m-[m
+         Product::create([[m
+             "name" => $request->name,[m
+             "category_id" => $request->category_id,[m
+             "description" => $request->description,[m
+             "price" => $request->price,[m
+[31m-            "image" => $imageFileName,[m
+[32m+[m[32m            "image" => "default.jpg",[m
+         ]);[m
+         return redirect()->route('products.index');[m
+     }[m
+[36m@@ -54,8 +50,7 @@[m [mpublic function store(Request $request)[m
+      */[m
+     public function show(string $id)[m
+     {[m
+[31m-        $product = Product::whereId($id)->first();[m
+[31m-        return view('admin.product.show', ["product" => $product]);[m
+[32m+[m[32m        //[m
+     }[m
+ [m
+     /**[m
+[36m@@ -77,16 +72,16 @@[m [mpublic function edit(string $id)[m
+      */[m
+     public function update(Request $request, string $id)[m
+     {[m
+[31m-        $imageFileName = uniqid() . '.' . $request->file('image')->getClientOriginalExtension();[m
+[32m+[m[32m        $namaFile = uniqid() . "." . $request->file("foto")->getClientOriginalExtension();[m
+ [m
+[31m-        $request->file("image")->storeAs("image", $imageFileName, "public");[m
+[32m+[m[32m        $request->file("foto")->storeAs("image", $namaFile, "public");[m
+ [m
+         Product::find($id)->update([[m
+             "name" => $request->name,[m
+             "category_id" => $request->category_id,[m
+             "description" => $request->description,[m
+             "price" => $request->price,[m
+[31m-            "image" => $imageFileName,[m
+[32m+[m[32m            "image" => "default.jpg",[m
+         ]);[m
+         return redirect()->route("products.index");[m
+     }[m
+[36m@@ -96,7 +91,6 @@[m [mpublic function update(Request $request, string $id)[m
+      */[m
+     public function destroy(string $id)[m
+     {[m
+[31m-        Product::destroy($id);[m
+[31m-        return redirect()->route('products.index');[m
+[32m+[m[32m        //[m
+     }[m
+ }[m
+[1mdiff --git a/app/Models/product.php b/app/Models/product.php[m
+[1mindex 2dc0353..d19b928 100644[m
+[1m--- a/app/Models/product.php[m
+[1m+++ b/app/Models/product.php[m
+[36m@@ -11,9 +11,4 @@[m [mclass product extends Model[m
+     protected $fillable = ["name", "category_id", "price", 'description', 'image'];[m
+ [m
+     protected $guarded = ["id"];[m
+[31m-[m
+[31m-    public function Category()[m
+[31m-    {[m
+[31m-        return $this->belongsTo(Category::class);[m
+[31m-    }[m
+ }[m
+[1mdiff --git a/resources/views/admin/login.blade.php b/resources/views/admin/login.blade.php[m
+[1mindex 868c097..f8f20ab 100644[m
+[1m--- a/resources/views/admin/login.blade.php[m
+[1m+++ b/resources/views/admin/login.blade.php[m
+[36m@@ -1,39 +1,18 @@[m
+ @extends('layout.app')[m
+ [m
+ @section('body')[m
+[31m-<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">[m
+[31m-    <div class="row justify-content-center">[m
+[31m-        <div class="shadow-lg p-5 bg-body-tertiary rounded">[m
+[31m-            <div class="icon d-flex align-items-center justify-content-center mb-4">[m
+[31m-                <span class="fa fa-user-o"></span>[m
+[31m-            </div>[m
+[31m-            <h3 class="text-center mb-4">Sign In</h3>[m
+[31m-            <form class="login-form" method="POST" action="{{ route('adminAuthenticate') }}">[m
+[31m-                @csrf[m
+[31m-                <div class="form-group mb-3">[m
+[31m-                    <input type="text" class="form-control rounded-left" placeholder="Email" required name="email">[m
+[31m-                </div>[m
+[31m-                <div class="form-group mb-3">[m
+[31m-                    <input type="password" class="form-control rounded-left" placeholder="Password" required[m
+[31m-                        name="password">[m
+[31m-                </div>[m
+[31m-                <div class="form-g  roup mb-4">[m
+[31m-                    <button type="submit" class="form-control btn btn-primary rounded submit px-3">Login</button>[m
+[31m-                </div>[m
+[31m-                <div class="form-group d-md-flex">[m
+[31m-                    <div class="w-50">[m
+[31m-                        <label class="checkbox-wrap checkbox-primary">Remember Me[m
+[31m-                            <input type="checkbox" checked>[m
+[31m-                            <span class="checkmark"></span>[m
+[31m-                        </label>[m
+[31m-                    </div>[m
+[31m-                    <div class="w-50 text-md-right">[m
+[31m-                        <a href="#">Forgot Password</a>[m
+[31m-                    </div>[m
+[31m-                </div>[m
+[31m-            </form>[m
+[32m+[m[32m<div class="d-flex align-items-center justify-content-center" style="height: 100vh;">[m
+[32m+[m[32m    <form method="POST" action="{{ route('adminAuthenticate') }}" class="mx-auto">[m
+[32m+[m[32m        @csrf[m
+[32m+[m[32m        <div class="mb-3">[m
+[32m+[m[32m            <label for="exampleInputEmail1" class="form-label">Email address</label>[m
+[32m+[m[32m            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">[m
+         </div>[m
+[31m-    </div>[m
+[32m+[m[32m        <div class="mb-3">[m
+[32m+[m[32m            <label for="exampleInputPassword1" class="form-label">Password</label>[m
+[32m+[m[32m            <input type="password" name="password" class="form-control" id="exampleInputPassword1">[m
+[32m+[m[32m        </div>[m
+[32m+[m[32m        <button type="submit" class="btn btn-primary">Submit</button>[m
+[32m+[m[32m    </form>[m
+ </div>[m
+[31m-[m
+ @endsection[m
+\ No newline at end of file[m
+[1mdiff --git a/resources/views/admin/product/create.blade.php b/resources/views/admin/product/create.blade.php[m
+[1mindex 1aa43f7..23fc3a9 100644[m
+[1m--- a/resources/views/admin/product/create.blade.php[m
+[1m+++ b/resources/views/admin/product/create.blade.php[m
+[36m@@ -4,7 +4,7 @@[m
+ @section('body')[m
+ <div class="container mt-5">[m
+     <h2 class="mb-4">Product Input Form</h2>[m
+[31m-    <form method="POST" action="{{ route('products.store') }}" enctype="multipart/form-data">[m
+[32m+[m[32m    <form method="POST" action="{{ route('products.store') }}">[m
+         @csrf[m
+         <div class="mb-3">[m
+             <label for="productName" class="form-label">Product Name</label>[m
+[36m@@ -38,7 +38,7 @@[m
+         <!-- Image -->[m
+         <div class="mb-3">[m
+             <label for="productImage" class="form-label">Product Image</label>[m
+[31m-            <input type="file" class="form-control" id="productImage" name="image">[m
+[32m+[m[32m            <input type="file" class="form-control" id="productImage">[m
+         </div>[m
+ [m
+         <!-- Submit Button -->[m
+[1mdiff --git a/resources/views/admin/product/edit.blade.php b/resources/views/admin/product/edit.blade.php[m
+[1mindex af98acd..0ff9902 100644[m
+[1m--- a/resources/views/admin/product/edit.blade.php[m
+[1m+++ b/resources/views/admin/product/edit.blade.php[m
+[36m@@ -3,7 +3,7 @@[m
+ @section('body')[m
+ <div class="container mt-5">[m
+     <h2 class="mb-4">Product Input Form</h2>[m
+[31m-    <form method="POST" action="{{ route('products.update', $product->id) }}" enctype="multipart/form-data">[m
+[32m+[m[32m    <form method="POST" action="{{ route('products.update', $product->id) }}">[m
+         @method('PUT')[m
+         @csrf[m
