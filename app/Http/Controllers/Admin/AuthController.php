@@ -17,7 +17,7 @@ class AuthController extends Controller
         $admin = Admin::whereEmail($request->email)->wherePassword($request->password)->first();
 
         if ($admin) {
-            return view('admin.dashboard');
+            return redirect()->route('/admin/dashboard');
         } else {
             return redirect()->back();
         }
